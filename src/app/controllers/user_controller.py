@@ -11,9 +11,9 @@ async def get_user_profile(
 ):
     try:
         user = user_service.get_user_by_id(db, current_user["id"])
-        return responder.response_ok(
+        return responder.response(
             "YOUR_PROFILE",
-            {"id": user.id, "name": user.name, "email": user.email}
+            data={"id": user.id, "name": user.name, "email": user.email}
         )
     except Exception as error:
-        return responder.response_server_error()
+        return responder.response("SERVER_ERROR", status_code=500)

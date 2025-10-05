@@ -1,5 +1,3 @@
-import os
-import jwt
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from configs.database import get_db
@@ -12,7 +10,7 @@ async def register(user_data: RegisterLoginSchema, db: Session = Depends(get_db)
         check_user = auth_service.get_user_by_email(db, user_data.email)
 
         if check_user:
-            return responder.response_ok_issues("USER_EXISTS", {})
+            return responder.response("USER_EXISTS", status_code=400)
 
         created_user = auth_service.create_user(
             db,
@@ -22,30 +20,26 @@ async def register(user_data: RegisterLoginSchema, db: Session = Depends(get_db)
         )
 
         if not created_user:
-            return responder.response_ok_issues("USER_NOT_REGISTERED", {})
+            return responder.response("USER_NOT_REGISTERED", status_code=400)
 
-        return responder.response_ok("USER_REGISTERED", {})
+        return responder.response("USER_REGISTERED")
     except Exception as error:
-        return responder.response_server_error()
+        return responder.response("SERVER_ERROR", status_code=500)
 
 async def login(user_data: RegisterLoginSchema, db: Session = Depends(get_db)):
     try:
         user = auth_service.get_user_by_email(db, user_data.email)
 
         if not user:
-            return responder.response_ok_issues("USER_NOT_EXISTS", {})
+            return responder.response("USER_NOT_EXISTS", status_code=404)
 
         is_match = auth_service.verify_password(user_data.password, user.password)
 
         if not is_match:
-            return responder.response_ok_issues("INVALID_CREDS", {})
+            return responder.response("INVALID_CREDS", status_code=401)
 
-        token = jwt.encode(
-            {"id": user.id, "name": user.name},
-            os.getenv("JWT_SECRET_KEY"),
-            algorithm="HS256"
-        )
+        token = auth_service.create_access_token(user)
 
-        return responder.response_ok("LOGIN_SUCCESS", {"token": token})
+        return responder.response("LOGIN_SUCCESS", data={"token": token})
     except Exception as error:
-        return responder.response_server_error()
+        return responder.response("SERVER_ERROR", status_code=500)
