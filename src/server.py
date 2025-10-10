@@ -12,7 +12,7 @@ load_dotenv()
 
 app = FastAPI()
 
-# Create database tables
+# CReate database tables
 Base.metadata.create_all(bind=engine)
 
 # Include routers

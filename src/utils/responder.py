@@ -22,3 +22,9 @@ def response(
         content=response_content
     )
 
+def response_unauthenticated():
+    return response("UNAUTHENTICATED", status_code=401)
+
+def response_validation_issues(code: str, data: dict, errors: list):
+    return response(code, status_code=422, data=data, errors=errors)
+
