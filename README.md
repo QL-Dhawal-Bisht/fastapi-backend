@@ -1,95 +1,25 @@
-# Blog API
+## APIs
 
-This is a simple blog API built with FastAPI.
+The following APIs are available:
 
-## API Endpoints
+### User APIs
 
-### Posts
+- **`POST /register`**: Register a new user.
+- **`POST /login`**: Log in a user and receive a JWT token.
+- **`GET /me`**: Get the profile of the currently authenticated user.
+- **`PUT /me`**: Update the profile of the currently authenticated user.
+- **`DELETE /me`**: Delete the profile of the currently authenticated user.
 
-*   **GET /posts**
+### Post APIs
 
-    *   Description: Get all posts.
-    *   Response:
+- **`GET /posts/`**: Get a list of all posts with pagination and sorting.
+- **`GET /posts/{id}`**: Get a single post by its ID.
+- **`POST /posts/`**: Create a new post (requires authentication).
+- **`PUT /posts/{id}`**: Update a post by its ID (only the author is allowed).
+- **`DELETE /posts/{id}`**: Delete a post by its ID (only the author or an admin is allowed).
 
-        ```json
-        [
-            {
-                "id": 1,
-                "title": "My First Post",
-                "content": "This is my first post."
-            },
-            {
-                "id": 2,
-                "title": "My Second Post",
-                "content": "This is my second post."
-            }
-        ]
-        ```
+### Comment APIs
 
-*   **GET /posts/{post_id}**
-
-    *   Description: Get a single post by ID.
-    *   Response:
-
-        ```json
-        {
-            "id": 1,
-            "title": "My First Post",
-            "content": "This is my first post."
-        }
-        ```
-
-*   **POST /posts**
-
-    *   Description: Create a new post.
-    *   Request Body:
-
-        ```json
-        {
-            "title": "My New Post",
-            "content": "This is my new post."
-        }
-        ```
-
-    *   Response:
-
-        ```json
-        {
-            "id": 3,
-            "title": "My New Post",
-            "content": "This is my new post."
-        }
-        ```
-
-*   **PUT /posts/{post_id}**
-
-    *   Description: Update a post.
-    *   Request Body:
-
-        ```json
-        {
-            "title": "My Updated Post",
-            "content": "This is my updated post."
-        }
-        ```
-
-    *   Response:
-
-        ```json
-        {
-            "id": 1,
-            "title": "My Updated Post",
-            "content": "This is my updated post."
-        }
-        ```
-
-*   **DELETE /posts/{post_id}**
-
-    *   Description: Delete a post.
-    *   Response:
-
-        ```json
-        {
-            "message": "Post deleted successfully."
-        }
-        ```
+- **`GET /posts/{post_id}/comments`**: Get all comments for a specific post.
+- **`POST /posts/{post_id}/comments`**: Add a new comment to a post (requires authentication).
+- **`DELETE /comments/{id}`**: Delete a comment by its ID (only the author or an admin is allowed).
