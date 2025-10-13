@@ -9,5 +9,9 @@ MESSAGES = {
     "VALIDATION_ISSUES": "One or more parameters are invalid",
     "TOKEN_NOT_FOUND": "Auth token is required",
     "UNAUTHENTICATED": "Your token is either invalid or expired",
-    "YOUR_PROFILE": "Here is your profile details"
+    "YOUR_PROFILE": "Here is your profile details",
+    "COMMENTS_FETCHED": "Comments fetched successfully",
+    "COMMENT_ADDED": "Comment added successfully",
+    "COMMENT_NOT_ADDED": "Failed to add comment",
+    "COMMENT_DELETED": "Comment deleted successfully"
 }

@@ -4,7 +4,7 @@ from configs.database import get_db
 from services import comment_service
 from utils import responder
 from app.middlewares.is_authenticated import is_authenticated
-from app.schemas import CommentCreate
+from app.schemas import CommentCreate, Comment
 
 async def get_comments_for_post(
     post_id: int,
@@ -12,8 +12,11 @@ async def get_comments_for_post(
 ):
     try:
         comments = comment_service.get_comments_for_post(db, post_id)
-        return responder.response("COMMENTS_FETCHED", data=comments)
+        # Convert SQLAlchemy models to Pydantic models for proper serialization
+        comments_data = [Comment.model_validate(comment).model_dump() for comment in comments]
+        return responder.response("COMMENTS_FETCHED", data=comments_data)
     except Exception as error:
+        print(f"Error fetching comments: {error}")
         return responder.response("SERVER_ERROR", status_code=500)
 
 async def add_comment_to_post(
@@ -26,8 +29,11 @@ async def add_comment_to_post(
         comment = comment_service.create_comment(db, comment_data, post_id, current_user["id"])
         if not comment:
             return responder.response("COMMENT_NOT_ADDED", status_code=400)
-        return responder.response("COMMENT_ADDED", data=CommentCreate.model_validate(comment).dict())
+        # Convert SQLAlchemy model to Pydantic model for proper serialization
+        comment_data = Comment.model_validate(comment).model_dump()
+        return responder.response("COMMENT_ADDED", data=comment_data)
     except Exception as error:
+        print(f"Error creating comment: {error}")
         return responder.response("SERVER_ERROR", status_code=500)
 
 async def delete_comment(
@@ -42,4 +48,5 @@ async def delete_comment(
             raise HTTPException(status_code=404, detail="Comment not found or not authorized")
         return responder.response("COMMENT_DELETED")
     except Exception as error:
+        print(f"Error deleting comment: {error}")
         return responder.response("SERVER_ERROR", status_code=500)

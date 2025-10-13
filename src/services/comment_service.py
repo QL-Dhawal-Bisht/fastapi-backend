@@ -3,6 +3,9 @@ from models.comment import Comment
 from app.schemas import CommentCreate
 
 def get_comments_for_post(db: Session, post_id: int):
+
+    comment = db.query(Comment).filter(Comment.post_id == post_id).all()
+    print(comment)
     return db.query(Comment).filter(Comment.post_id == post_id).all()
 
 def create_comment(db: Session, comment_data: CommentCreate, post_id: int, user_id: int):

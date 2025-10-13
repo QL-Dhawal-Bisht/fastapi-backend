@@ -39,3 +39,13 @@ class CommentCreate(BaseModel):
 
     class Config:
         from_attributes = True
+
+class Comment(BaseModel):
+    id: int
+    content: str
+    post_id: int
+    user_id: int
+    author: User
+
+    class Config:
+        from_attributes = True
