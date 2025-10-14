@@ -14,13 +14,13 @@ def create_post(db: Session, post_data: PostCreate, user_id: int):
         db.add(post)
         db.commit()
         db.refresh(post)
-        return post
+        return post # Need not return the created value, frontend never uses it, it just increases the reponse size
     except Exception as e:
         db.rollback()
         return None
 
 def update_post(db: Session, post_id: int, post_data: PostUpdate, user_id: int):
-    post = get_post_by_id(db, post_id)
+    post = get_post_by_id(db, post_id) # Getting post Not needed for updation
     if post and post.user_id == user_id:
         if post_data.title:
             post.title = post_data.title
@@ -31,7 +31,7 @@ def update_post(db: Session, post_id: int, post_data: PostUpdate, user_id: int):
     return post
 
 def delete_post(db: Session, post_id: int, user_id: int, is_admin: bool = False):
-    post = get_post_by_id(db, post_id)
+    post = get_post_by_id(db, post_id) # Getting post Not needed for deletion
     if post and (post.user_id == user_id or is_admin):
         db.delete(post)
         db.commit()

@@ -24,7 +24,7 @@ def verify_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(user: User):
+def create_access_token(user: User): # Suggestion: This JWT work (encoding/decoding) can be moved to a separate utility file
     try:
         token = jwt.encode(
             {"id": user.id, "name": user.name},

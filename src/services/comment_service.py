@@ -20,7 +20,7 @@ def create_comment(db: Session, comment_data: CommentCreate, post_id: int, user_
         return None
 
 def delete_comment(db: Session, comment_id: int, user_id: int, is_admin: bool = False):
-    comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    comment = db.query(Comment).filter(Comment.id == comment_id).first() # Getting comment Not needed for deletion
     if comment and (comment.user_id == user_id or is_admin):
         db.delete(comment)
         db.commit()

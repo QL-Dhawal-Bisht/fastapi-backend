@@ -6,7 +6,7 @@ def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 def update_user(db: Session, user_id: int, user_data: UserUpdate):
-    user = get_user_by_id(db, user_id)
+    user = get_user_by_id(db, user_id) # Getting user Not needed for updation
     if user:
         if user_data.name:
             user.name = user_data.name
@@ -17,7 +17,7 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate):
     return user
 
 def delete_user(db: Session, user_id: int):
-    user = get_user_by_id(db, user_id)
+    user = get_user_by_id(db, user_id) # Getting user Not needed for deletion
     if user:
         db.delete(user)
         db.commit()
