@@ -1,0 +1,10 @@
+1. .env file should NEVER be pushed to git. Create a .gitignore file to enter these values.
+2. UserService Line 9 & 20
+3. PostService Line 17, 23 & 34
+4. CommentService Line 23
+5. AuthService Line 27
+6. Logging of exception from catch block is important in log files than simply printing them in controller files
+7. Overall project structure is good and modular. Can change to python nomenclatures 
+        Controller --> Service
+        Service    --> Repository
+8. Should now go for the loggerengine
