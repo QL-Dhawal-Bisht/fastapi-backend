@@ -1,29 +1,16 @@
 from sqlalchemy.orm import Session
-from models.comment import Comment
+from app.repositories.comment_repository import CommentRepository
 from app.schemas import CommentCreate
 
-def get_comments_for_post(db: Session, post_id: int):
+class CommentService:
+    def __init__(self, db: Session):
+        self.repo = CommentRepository(db)
 
-    comment = db.query(Comment).filter(Comment.post_id == post_id).all()
-    print(comment)
-    return db.query(Comment).filter(Comment.post_id == post_id).all()
+    def get_comments_for_post(self, post_id: int):
+        return self.repo.get_for_post(post_id)
 
-def create_comment(db: Session, comment_data: CommentCreate, post_id: int, user_id: int):
-    try:
-        comment = Comment(**comment_data.model_dump(), post_id=post_id, user_id=user_id)
-        db.add(comment)
-        db.commit()
-        db.refresh(comment)
-        return comment
-    except Exception as e:
-        db.rollback()
-        return None
+    def create_comment(self, comment_data: CommentCreate, post_id: int, user_id: int):
+        return self.repo.create(comment_data, post_id, user_id)
 
-def delete_comment(db: Session, comment_id: int, user_id: int, is_admin: bool = False):
-    comment = db.query(Comment).filter(Comment.id == comment_id).first()
-    if comment and (comment.user_id == user_id or is_admin):
-        db.delete(comment)
-        db.commit()
-    return comment
-
-
+    def delete_comment(self, comment_id: int, user_id: int, is_admin: bool = False):
+        return self.repo.delete(comment_id, user_id, is_admin)

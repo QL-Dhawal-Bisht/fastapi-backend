@@ -1,24 +1,16 @@
 from sqlalchemy.orm import Session
-from models.user import User
+from app.repositories.user_repository import UserRepository
 from app.schemas import UserUpdate
 
-def get_user_by_id(db: Session, user_id: int):
-    return db.query(User).filter(User.id == user_id).first()
+class UserService:
+    def __init__(self, db: Session):
+        self.repo = UserRepository(db)
 
-def update_user(db: Session, user_id: int, user_data: UserUpdate):
-    user = get_user_by_id(db, user_id)
-    if user:
-        if user_data.name:
-            user.name = user_data.name
-        if user_data.email:
-            user.email = user_data.email
-        db.commit()
-        db.refresh(user)
-    return user
+    def get_user_by_id(self, user_id: int):
+        return self.repo.get_by_id(user_id)
 
-def delete_user(db: Session, user_id: int):
-    user = get_user_by_id(db, user_id)
-    if user:
-        db.delete(user)
-        db.commit()
-    return user
+    def update_user(self, user_id: int, user_data: UserUpdate):
+        return self.repo.update(user_id, user_data)
+
+    def delete_user(self, user_id: int):
+        return self.repo.delete(user_id)

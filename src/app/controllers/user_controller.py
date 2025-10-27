@@ -1,17 +1,20 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from configs.database import get_db
-from services import user_service
+from services.user_service import UserService
 from utils import responder
 from app.middlewares.is_authenticated import is_authenticated
 from app.schemas import UserUpdate
 
+def get_user_service(db: Session = Depends(get_db)) -> UserService:
+    return UserService(db)
+
 async def get_user_profile(
     current_user: dict = Depends(is_authenticated),
-    db: Session = Depends(get_db)
+    service: UserService = Depends(get_user_service)
 ):
     try:
-        user = user_service.get_user_by_id(db, current_user["id"])
+        user = service.get_user_by_id(current_user["id"])
         return responder.response(
             "YOUR_PROFILE",
             data={"id": user.id, "name": user.name, "email": user.email}
@@ -22,10 +25,10 @@ async def get_user_profile(
 async def update_user_profile(
     user_data: UserUpdate,
     current_user: dict = Depends(is_authenticated),
-    db: Session = Depends(get_db)
+    service: UserService = Depends(get_user_service)
 ):
     try:
-        user = user_service.update_user(db, current_user["id"], user_data)
+        user = service.update_user(current_user["id"], user_data)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return responder.response(
@@ -37,10 +40,10 @@ async def update_user_profile(
 
 async def delete_user_profile(
     current_user: dict = Depends(is_authenticated),
-    db: Session = Depends(get_db)
+    service: UserService = Depends(get_user_service)
 ):
     try:
-        user = user_service.delete_user(db, current_user["id"])
+        user = service.delete_user(current_user["id"])
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return responder.response("PROFILE_DELETED")
